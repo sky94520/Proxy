@@ -21,7 +21,7 @@ class RedisClient(object):
         """
         # 不存在该代理键值对，则添加
         if not self.db.zscore(REDIS_KEY, proxy):
-            return self.db.zadd(REDIS_KEY, score, proxy)
+            return self.db.zadd(REDIS_KEY, {proxy: score})
 
     def random(self):
         """
@@ -48,7 +48,7 @@ class RedisClient(object):
 
         if score and score > MIN_SCORE:
             print('Proxy', proxy, 'Current score', score, 'sub 1')
-            return self.db.zincrby(REDIS_KEY, proxy, -1)
+            return self.db.zincrby(REDIS_KEY, -1, proxy)
         else:
             print('Proxy', proxy, 'Current score', score, 'removed')
             return self.db.zrem(REDIS_KEY, proxy)
@@ -66,7 +66,7 @@ class RedisClient(object):
         将代理设置为最大值MAX_SCORE
         """
         print('Proxy', proxy, 'is Useful,and the score set to', MAX_SCORE)
-        return self.db.zadd(REDIS_KEY, MAX_SCORE, proxy)
+        return self.db.zadd(REDIS_KEY, {proxy: MAX_SCORE})
 
     def count(self):
         """

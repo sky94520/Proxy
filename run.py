@@ -5,21 +5,14 @@ from multiprocessing import Process
 from getter import Getter
 from tester import Tester
 import time
-
-# 每若干秒为一个循环
-TESTER_CYCLE = 20
-GETTER_CYCLE = 20
-# 是否开启对应的调度器
-TESTER_ENABLED = True
-GETTER_ENABLED = False
-API_ENABLED = True
+from config import TESTER_CYCLE, GETTER_CYCLE, TESTER_ENABLED, GETTER_ENABLED
 
 
 class Scheduler(object):
     """
     调度类，会根据配置文件来选择是否开启对应的调度器
     """
-    def schedule_tester(self, cycle=GETTER_CYCLE):
+    def schedule_tester(self, cycle=TESTER_CYCLE):
         """
         定时测试代理
         """

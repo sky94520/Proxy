@@ -61,6 +61,7 @@ class Crawler(object, metaclass=Proxymetaclass):
         try:
             text = get_page(url, params=params)
             results = re.findall(self.pattern, text)
+            # 所有的列表整合成一个列表
             for result in results:
                 yield result
         except Exception as e:
@@ -71,4 +72,4 @@ class Crawler(object, metaclass=Proxymetaclass):
 if __name__ == '__main__':
     crawler = Crawler()
 
-    print(crawler.crawl_daili66())
+    print(list(crawler.crawl_daili66()))
