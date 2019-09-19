@@ -4,6 +4,7 @@
 from flask import Flask, g
 from db import RedisClient
 from redis.exceptions import DataError
+import gunicorn
 
 __all__ = ['app']
 app = Flask(__name__)

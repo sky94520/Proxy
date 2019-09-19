@@ -2,7 +2,6 @@
 # -*-coding:utf-8 -*-
 
 from multiprocessing import Process
-from api import app
 from getter import Getter
 from tester import Tester
 import time
@@ -14,9 +13,6 @@ GETTER_CYCLE = 20
 TESTER_ENABLED = True
 GETTER_ENABLED = False
 API_ENABLED = True
-# 面向的API
-API_HOST = '0.0.0.0'
-API_PORT = 5555
 
 
 class Scheduler(object):
@@ -45,12 +41,6 @@ class Scheduler(object):
             getter.run()
             time.sleep(cycle)
 
-    def schedule_api(self):
-        """
-        开启api
-        """
-        app.run(API_HOST, API_PORT)
-
     def run(self):
         print('Proxy Pool start running')
 
@@ -61,10 +51,6 @@ class Scheduler(object):
         if GETTER_ENABLED:
             getter_process = Process(target=self.schedule_getter)
             getter_process.start()
-
-        if API_ENABLED:
-            api_process = Process(target=self.schedule_api)
-            api_process.start()
 
 
 if __name__ == '__main__':
