@@ -52,10 +52,17 @@ def get_counts():
     return str(conn.count())
 
 
-@app.route('/error/<path:ip>', methods=['POST'])
-def error(ip):
+@app.route('/error/<path:proxy>', methods=['POST'])
+def error(proxy):
     conn = get_conn()
-    result = conn.decrease(ip, -10)
+    result = conn.decrease(proxy, -10)
+    return json.dumps(result)
+
+
+@app.route('/success/<path:proxy>', methods=['POST'])
+def success(proxy):
+    conn = get_conn()
+    result = conn.max(proxy)
     return json.dumps(result)
 
 
