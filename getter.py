@@ -4,6 +4,8 @@
 from db import RedisClient
 from crawler import Crawler
 from config import POOL_UPPER_THRESHOLD
+import log
+import logging
 
 
 class Getter(object):
@@ -21,14 +23,18 @@ class Getter(object):
         return self.redis.count() >= POOL_UPPER_THRESHOLD
 
     def run(self):
-        print('Getter now running')
-
         if not self.is_over_threshold():
+            logging.info('Getter now running')
+            old_count = self.redis.count()
             for callback in self.crawler.__CrawlFunc__:
                 proxies = self.crawler.get_proxies(callback)
 
                 for proxy in proxies:
                     self.redis.add(proxy)
+                if old_count == self.redis.count():
+                    logging.warning('the crawler can not crawl new proxy')
+                else:
+                    old_count = self.redis.count()
 
 
 if __name__ == '__main__':

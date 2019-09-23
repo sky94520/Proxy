@@ -3,6 +3,8 @@
 
 from utils import get_page
 import re
+import logging
+import log
 
 
 class Proxymetaclass(type):
@@ -65,7 +67,7 @@ class Crawler(object, metaclass=Proxymetaclass):
             for result in results:
                 yield result
         except Exception as e:
-            print(e)
+            logging.error(e)
         return None
 
 
