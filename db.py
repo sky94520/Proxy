@@ -46,13 +46,16 @@ class RedisClient(object):
         return 修改后的代理分数
         """
         score = self.db.zscore(REDIS_KEY, proxy)
+        ret = None
 
         if score and score > MIN_SCORE:
             print('Proxy', proxy, 'Current score', score, 'sub 1')
-            return self.db.zincrby(REDIS_KEY, delta, proxy)
-        else:
+            ret = self.db.zincrby(REDIS_KEY, delta, proxy)
+        # 减去之后再判断是否应该删除
+        if score + delta <= MIN_SCORE:
             print('Proxy', proxy, 'Current score', score, 'removed')
-            return self.db.zrem(REDIS_KEY, proxy)
+            ret = self.db.zrem(REDIS_KEY, proxy)
+        return ret
 
     def exists(self, proxy):
         """
