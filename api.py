@@ -1,18 +1,21 @@
 #! /usr/bin/python3.6
 # -*-coding:utf-8 -*-
 
+import json
 from flask import Flask, g
 from db import RedisClient
 from redis.exceptions import DataError
 import gunicorn
+STOP_TESTER_KEY = 'stop_tester'
 
-__all__ = ['app']
 app = Flask(__name__)
 
 
 def get_conn():
     if not hasattr(g, 'redis'):
         g.redis = RedisClient()
+    # 当使用到代理池的时候，就停止之前的测试10min
+    g.redis.expire('stop_tester', 10 * 60)
     return g.redis
 
 
@@ -47,6 +50,13 @@ def get_counts():
     """
     conn = get_conn()
     return str(conn.count())
+
+
+@app.route('/error/<path:ip>', methods=['POST'])
+def error(ip):
+    conn = get_conn()
+    result = conn.decrease(ip, -10)
+    return json.dumps(result)
 
 
 if __name__ == '__main__':

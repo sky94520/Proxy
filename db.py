@@ -38,17 +38,18 @@ class RedisClient(object):
             else:
                 raise DataError
 
-    def decrease(self, proxy):
+    def decrease(self, proxy, delta=-1):
         """
         代理值减一，分值小于最小值时则删除
-        @param proxy: 代理
+        :param proxy: 代理
+        :param delta: 要减去的分数值
         return 修改后的代理分数
         """
         score = self.db.zscore(REDIS_KEY, proxy)
 
         if score and score > MIN_SCORE:
             print('Proxy', proxy, 'Current score', score, 'sub 1')
-            return self.db.zincrby(REDIS_KEY, -1, proxy)
+            return self.db.zincrby(REDIS_KEY, delta, proxy)
         else:
             print('Proxy', proxy, 'Current score', score, 'removed')
             return self.db.zrem(REDIS_KEY, proxy)
@@ -81,3 +82,10 @@ class RedisClient(object):
         return: 全部代理列表
         """
         return self.db.zrangebyscore(REDIS_KEY, MIN_SCORE, MAX_SCORE)
+
+    def expire(self, name, seconds):
+        self.db.set(name, '1')
+        self.db.expire(name, seconds)
+
+    def exist(self, name):
+        return self.db.exists(name)
