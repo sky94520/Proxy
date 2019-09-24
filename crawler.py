@@ -51,7 +51,7 @@ class Crawler(object, metaclass=Proxymetaclass):
         params = {
             'getnum': None,
             'isp': 0,
-            'anonymoustype': 0,
+            'anonymoustype': 3,
             'start': None,
             'ports': None,
             'export': None,
