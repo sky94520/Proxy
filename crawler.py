@@ -5,6 +5,7 @@ from utils import get_page
 import re
 import logging
 import log
+import requests
 
 
 class Proxymetaclass(type):
@@ -57,11 +58,13 @@ class Crawler(object, metaclass=Proxymetaclass):
             'export': None,
             'ipaddress': None,
             'area': 0,
-            'proxytype': 2,
+            'proxytype': 0,
             'api': '66ip'
         }
         try:
-            text = get_page(url, params=params)
+            response = requests.get(url, params=params)
+            text = response.text
+            # get_page(url, params=params)
             results = re.findall(self.pattern, text)
             # 所有的列表整合成一个列表
             for result in results:

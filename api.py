@@ -15,7 +15,7 @@ def get_conn():
     if not hasattr(g, 'redis'):
         g.redis = RedisClient()
     # 当使用到代理池的时候，就停止之前的测试10min
-    g.redis.expire('stop_tester', 10 * 60)
+    # g.redis.expire('stop_tester', 10 * 60)
     return g.redis
 
 
