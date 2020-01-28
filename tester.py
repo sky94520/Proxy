@@ -1,13 +1,16 @@
 #! /usr/bin/python3.6
 # -*-coding:utf-8 -*-
+"""
+测试
+"""
 
+import logging
 import asyncio
 import aiohttp
-from db import RedisClient
+from models import Proxy
 from asyncio import TimeoutError
 from aiohttp.client_exceptions import ClientError, ClientConnectorError
 import time
-from api import STOP_TESTER_KEY
 from settings import BATCH_TEST_SIZE, VALID_STATUS_CODES, TEST_URL
 
 
@@ -16,7 +19,7 @@ class Tester(object):
     测试类，会根据提供的测试IP地址来判断代理是否可用
     """
     def __init__(self):
-        self.redis = RedisClient()
+        pass
 
     async def test_single_proxy(self, proxy):
         """
@@ -27,21 +30,17 @@ class Tester(object):
         conn = aiohttp.TCPConnector(verify_ssl=False)
         async with aiohttp.ClientSession(connector=conn) as session:
             try:
-                if isinstance(proxy, bytes):
-                    proxy = proxy.decode('utf-8')
-                real_proxy = 'http://' + proxy
-
+                real_proxy = 'http://%s:%d' % (proxy.ip, proxy.port)
                 print('Testing', proxy)
-                async with session.get(TEST_URL, proxy=real_proxy, timeout=15) as response:
+                async with session.get(TEST_URL, proxy=real_proxy, timeout=2) as response:
                     if response.status in VALID_STATUS_CODES:
-                        self.redis.max(proxy)
-                        print('Proxy useful', proxy)
+                        proxy.max()
                     else:
-                        self.redis.decrease(proxy)
-                        print('Response code invalid', proxy)
+                        proxy.decrease()
+                        logging.error('Response code invalid', proxy)
             except (ClientError, ClientConnectorError, TimeoutError, AttributeError):
-                self.redis.decrease(proxy)
-                print('Proxy request error', proxy)
+                proxy.decrease()
+                logging.error('Proxy request error %s' % proxy.ip)
 
     def run(self):
         """
@@ -50,13 +49,10 @@ class Tester(object):
         print('Starting test')
         try:
             # 获取所有的代理
-            proxies = self.redis.all()
+            proxies = Proxy.all()
             loop = asyncio.get_event_loop()
             # 批量测试
             for i in range(0, len(proxies), BATCH_TEST_SIZE):
-                # 外界正在使用代理池，则不再测试
-                if self.redis.exist(STOP_TESTER_KEY):
-                    break
                 test_proxies = proxies[i: i + BATCH_TEST_SIZE]
 
                 tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]

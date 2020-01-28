@@ -1,3 +1,6 @@
+"""
+按规则显示日志
+"""
 import os
 import datetime
 import logging

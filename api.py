@@ -1,22 +1,14 @@
 #! /usr/bin/python3.6
 # -*-coding:utf-8 -*-
+"""
+使用flask向外提供API
+"""
 
-import json
-from flask import Flask, g
-from db import RedisClient
-from redis.exceptions import DataError
+from flask import Flask
+from models import Proxy
 import gunicorn
-STOP_TESTER_KEY = 'stop_tester'
 
 app = Flask(__name__)
-
-
-def get_conn():
-    if not hasattr(g, 'redis'):
-        g.redis = RedisClient()
-    # 当使用到代理池的时候，就停止之前的测试10min
-    # g.redis.expire('stop_tester', 10 * 60)
-    return g.redis
 
 
 @app.route('/')
@@ -32,11 +24,10 @@ def get_proxy():
     否则根据msg来获取当前的错误
     """
     result = {'status': 'failure'}
-    conn = get_conn()
-    try:
-        proxy = conn.random()
-        result.update({'status': 'success', 'proxy': proxy})
-    except DataError:
+    proxy = Proxy.random()
+    if proxy is not None:
+        result.update({'status': 'success', 'proxy': str(proxy)})
+    else:
         result['msg'] = 'not enough available proxies'
 
     return result
@@ -48,22 +39,7 @@ def get_counts():
     获取代理池总量
     return :代理池总量
     """
-    conn = get_conn()
-    return str(conn.count())
-
-
-@app.route('/error/<path:proxy>', methods=['POST'])
-def error(proxy):
-    conn = get_conn()
-    result = conn.decrease(proxy, -10)
-    return json.dumps(result)
-
-
-@app.route('/success/<path:proxy>', methods=['POST'])
-def success(proxy):
-    conn = get_conn()
-    result = conn.max(proxy)
-    return json.dumps(result)
+    return str(Proxy.count())
 
 
 if __name__ == '__main__':
