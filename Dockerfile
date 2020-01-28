@@ -5,7 +5,7 @@ WORKDIR /code
 
 COPY requirements.txt /code
 
-RUN pip install -r requirements.txt
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 # 暴露端口
 EXPOSE 5555
