@@ -8,7 +8,7 @@ from asyncio import TimeoutError
 from aiohttp.client_exceptions import ClientError, ClientConnectorError
 import time
 from api import STOP_TESTER_KEY
-from config import BATCH_TEST_SIZE, VALID_STATUS_CODES, TEST_URL
+from settings import BATCH_TEST_SIZE, VALID_STATUS_CODES, TEST_URL
 
 
 class Tester(object):

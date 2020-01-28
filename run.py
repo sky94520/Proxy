@@ -5,7 +5,7 @@ from multiprocessing import Process
 from getter import Getter
 from tester import Tester
 import time
-from config import TESTER_CYCLE, GETTER_CYCLE, TESTER_ENABLED, GETTER_ENABLED
+from settings import TESTER_CYCLE, GETTER_CYCLE, TESTER_ENABLED, GETTER_ENABLED
 
 
 class Scheduler(object):

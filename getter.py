@@ -3,7 +3,7 @@
 
 from db import RedisClient
 from crawler import Crawler
-from config import POOL_UPPER_THRESHOLD
+from settings import POOL_UPPER_THRESHOLD
 import log
 import logging
 

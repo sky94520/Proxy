@@ -1,10 +1,8 @@
 #! /usr/bin/python3.6
 # -*-coding:utf-8 -*-
 
-from utils import get_page
 import re
 import logging
-import log
 import requests
 
 

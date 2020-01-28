@@ -4,7 +4,7 @@
 import redis
 from redis.exceptions import DataError
 from random import choice
-from config import MAX_SCORE, MIN_SCORE, INITIAL_SCORE, REDIS_KEY, REDIS_CONFIG
+from settings import MAX_SCORE, MIN_SCORE, INITIAL_SCORE, REDIS_KEY, REDIS_CONFIG
 
 
 class RedisClient(object):
