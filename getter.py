@@ -31,7 +31,7 @@ class Getter(object):
             # 调用爬虫方法
             for callback in self.crawler.__CrawlFunc__:
                 # 尝试爬取全部的数据
-                proxies = self.crawler.get_proxies(callback, POOL_UPPER_THRESHOLD - old_count)
+                proxies = self.crawler.get_proxies(callback)
 
                 Proxy.add(proxies)
                 if self.is_over_threshold():
