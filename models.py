@@ -79,7 +79,10 @@ class Proxy(Base):
         return 修改后的代理分数
         """
         self.score = min(max(MIN_SCORE, self.score + delta), MAX_SCORE)
-        session.add(self)
+        if self.score == 0:
+            session.delete(self)
+        else:
+            session.add(self)
         session.commit()
         return self.score
 
