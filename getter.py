@@ -30,17 +30,17 @@ class Getter(object):
             old_count = Proxy.count()
             # 调用爬虫方法
             for callback in self.crawler.__CrawlFunc__:
-                # 尝试爬取全部的数据
+                # 爬取数据
                 proxies = self.crawler.get_proxies(callback)
-
-                Proxy.add(proxies)
-                if self.is_over_threshold():
-                    break
+                for proxy in proxies:
+                    Proxy.add_one(proxy)
                 # 未爬取到数据
-                if old_count == Proxy.count():
+                new_count = Proxy.count()
+                if old_count == new_count:
                     logging.error('%s function can\'t crawl new proxy' % callback)
                 else:
-                    old_count = Proxy.count()
+                    logging.info('crawl %d proxies' % (new_count - old_count))
+                    old_count = new_count
 
 
 if __name__ == '__main__':

@@ -18,9 +18,6 @@ class Tester(object):
     """
     测试类，会根据提供的测试IP地址来判断代理是否可用
     """
-    def __init__(self):
-        pass
-
     async def test_single_proxy(self, proxy):
         """
         测试单个代理
@@ -31,16 +28,13 @@ class Tester(object):
         async with aiohttp.ClientSession(connector=conn) as session:
             try:
                 real_proxy = 'http://%s:%d' % (proxy.ip, proxy.port)
-                print('Testing', proxy)
                 async with session.get(TEST_URL, proxy=real_proxy, timeout=2) as response:
                     if response.status in VALID_STATUS_CODES:
                         proxy.max()
                     else:
                         proxy.decrease()
-                        logging.error('Response code invalid', proxy)
             except (ClientError, ClientConnectorError, TimeoutError, AttributeError):
                 proxy.decrease()
-                logging.error('Proxy request error %s' % proxy.ip)
 
     def run(self):
         """

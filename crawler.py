@@ -50,7 +50,6 @@ class Crawler(object, metaclass=Proxymetaclass):
         proxies = []
 
         for proxy in eval("self.{}()".format(callback)):
-            print('Successfully get proxy', proxy)
             proxies.append(proxy)
         return proxies
 

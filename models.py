@@ -6,6 +6,7 @@ import random
 import pymysql
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 from settings import INITIAL_SCORE, MAX_SCORE, MIN_SCORE
 from config import SQL_ALCHEMY_URI
@@ -24,6 +25,21 @@ class Proxy(Base):
     def count():
         count = session.query(Proxy).count()
         return count
+
+    @staticmethod
+    def add_one(proxy, score=INITIAL_SCORE):
+        """
+        添加代理数组，分数为初始分数
+        @param proxy: 代理
+        @param score: 分数
+        @return: 添加结果
+        """
+        try:
+            proxy.score = score
+            session.add(proxy)
+            session.commit()
+        except IntegrityError as e:
+            session.rollback()
 
     @staticmethod
     def add(proxies, score=INITIAL_SCORE):
