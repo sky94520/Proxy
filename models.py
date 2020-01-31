@@ -106,6 +106,9 @@ class Proxy(Base):
     def __str__(self):
         return '%s:%d' % (self.ip, self.port)
 
+    def __repr__(self):
+        return self.__str__()
+
     def __eq__(self, other):
         return self.ip == other.ip and self.port == other.port
 

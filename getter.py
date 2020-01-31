@@ -34,12 +34,12 @@ class Getter(object):
                 proxies = self.crawler.get_proxies(callback)
                 for proxy in proxies:
                     Proxy.add_one(proxy)
-                # 未爬取到数据
                 new_count = Proxy.count()
-                if old_count == new_count:
+                # 未爬取到数据
+                if old_count == new_count and len(proxies) == 0:
                     logging.error('%s function can\'t crawl new proxy' % callback)
-                else:
-                    logging.info('crawl %d proxies' % (new_count - old_count))
+                elif old_count != new_count:
+                    logging.info('%s crawl %d proxies' % (callback, (new_count - old_count)))
                     old_count = new_count
 
 
