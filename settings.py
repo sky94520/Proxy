@@ -1,5 +1,5 @@
 # 按秒 测试按照一天
-TESTER_CYCLE = 24 * 60 * 60
+TESTER_CYCLE = 50
 # 每天爬取一次
 GETTER_CYCLE = 20
 # 开启测试和获取函数
@@ -9,4 +9,11 @@ GETTER_ENABLED = True
 # 最大分和最小分以及初始分数
 MAX_SCORE = 100
 MIN_SCORE = 0
-INITIAL_SCORE = 10
+INITIAL_SCORE = 5
+
+REDIS_KEY = 'proxy'
+POOL_UPPER_THRESHOLD = 500
+
+BATCH_TEST_SIZE = 10
+VALID_STATUS_CODES = [200, 304]
+TEST_URL = 'http://www.baidu.com'

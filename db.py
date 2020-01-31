@@ -4,7 +4,8 @@
 import redis
 from redis.exceptions import DataError
 from random import choice
-from settings import MAX_SCORE, MIN_SCORE, INITIAL_SCORE, REDIS_KEY, REDIS_CONFIG
+from settings import MAX_SCORE, MIN_SCORE, INITIAL_SCORE, REDIS_KEY
+from config import REDIS_CONFIG
 
 
 class RedisClient(object):
@@ -49,11 +50,9 @@ class RedisClient(object):
         ret = None
 
         if score and score > MIN_SCORE:
-            print('Proxy', proxy, 'Current score', score, 'sub 1')
             ret = self.db.zincrby(REDIS_KEY, delta, proxy)
         # 减去之后再判断是否应该删除
         if score + delta <= MIN_SCORE:
-            print('Proxy', proxy, 'Current score', score, 'removed')
             ret = self.db.zrem(REDIS_KEY, proxy)
         return ret
 
@@ -69,7 +68,6 @@ class RedisClient(object):
         """
         将代理设置为最大值MAX_SCORE
         """
-        print('Proxy', proxy, 'is Useful,and the score set to', MAX_SCORE)
         return self.db.zadd(REDIS_KEY, {proxy: MAX_SCORE})
 
     def count(self):
