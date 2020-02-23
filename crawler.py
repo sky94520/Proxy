@@ -49,9 +49,9 @@ class Crawler(object, metaclass=Proxymetaclass):
         :param callback_name: 爬虫函数
         :return:
         """
-        proxies = []
-        for proxy in eval("self.{}()".format(callback_name)):
-            proxies.append(proxy)
+        proxies = set()
+        for ip, port in eval("self.{}()".format(callback_name)):
+            proxies.add(Proxy(ip=ip, port=port))
         return proxies
 
     def crawl_kuaidaili(self):
@@ -63,13 +63,11 @@ class Crawler(object, metaclass=Proxymetaclass):
         url_format = 'https://www.kuaidaili.com/free/inha/%d/'
 
         def callback(selector):
-            proxies = set()
             tr_list = selector.css('table tbody tr')
             for tr in tr_list:
                 ip = tr.css('[data-title="IP"]::text').extract_first()
                 port = int(tr.css('[data-title="PORT"]::text').extract_first())
-                proxies.add(Proxy(ip=ip, port=port))
-            return proxies
+                yield ip, port
         return self._crawl_page(func_name, url_format, callback)
 
     def crawl_89ip(self):
@@ -77,13 +75,11 @@ class Crawler(object, metaclass=Proxymetaclass):
         url_format = 'http://www.89ip.cn/index_%d.html'
 
         def callback(selector):
-            proxies = set()
             tr_list = selector.css('table tbody tr')
             for tr in tr_list:
                 td_list = tr.css('td::text').extract()
-                ip, port = td_list[0], int(td_list[1])
-                proxies.add(Proxy(ip=ip, port=port))
-            return proxies
+                ip, port = td_list[0].strip(), int(td_list[1])
+                yield ip, port
         return self._crawl_page(func_name, url_format, callback)
 
     def crawl_7yip(self):
@@ -91,13 +87,11 @@ class Crawler(object, metaclass=Proxymetaclass):
         url_format = 'https://www.7yip.cn/free/?action=china&page=%d'
 
         def callback(selector):
-            proxies = set()
             tr_list = selector.css('table tbody tr')
             for tr in tr_list:
                 ip = tr.css('[data-title="IP"]::text').extract_first()
                 port = int(tr.css('[data-title="PORT"]::text').extract_first())
-                proxies.add(Proxy(ip=ip, port=port))
-            return proxies
+                yield ip, port
 
         return self._crawl_page(func_name, url_format, callback)
 
@@ -157,9 +151,15 @@ class Crawler(object, metaclass=Proxymetaclass):
         else:
             self.variables[func_name][key] = value
 
+    def get_page(self, func_name):
+        return self.variables[func_name]['page']
+
 
 if __name__ == '__main__':
     crawler = Crawler()
-    # print(list(crawler.crawl_daili66()))
-    print(crawler.crawl_89ip())
+    generator = crawler.crawl_kuaidaili()
+    for ip, port in generator:
+        print(ip, port)
+    # proxies = crawler.crawl_7yip()
+    # proxies = crawler.crawl_89ip()
     # print(crawler.crawl_7yip())

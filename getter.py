@@ -25,6 +25,7 @@ class Getter(object):
         return Proxy.count() >= POOL_UPPER_THRESHOLD
 
     def run(self):
+        print('%d/%d' % (Proxy.count(), POOL_UPPER_THRESHOLD))
         if not self.is_over_threshold():
             logging.info('Getter now running')
             old_count = Proxy.count()
@@ -39,7 +40,7 @@ class Getter(object):
                 if old_count == new_count and len(proxies) == 0:
                     logging.error('%s function can\'t crawl new proxy' % callback)
                 elif old_count != new_count:
-                    logging.info('%s crawl %d proxies' % (callback, (new_count - old_count)))
+                    logging.info('%s crawl %d proxies. page:%d' % (callback, (new_count - old_count), self.crawler.get_page(callback)))
                     old_count = new_count
 
 

@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from settings import INITIAL_SCORE, MAX_SCORE, MIN_SCORE
 from config import SQL_ALCHEMY_URI
 
-engine = create_engine(SQL_ALCHEMY_URI, pool_size=10)
+engine = create_engine(SQL_ALCHEMY_URI)
 Base = declarative_base()
 
 
@@ -23,8 +23,10 @@ class Proxy(Base):
 
     @staticmethod
     def count():
-        count = session.query(Proxy).count()
-        return count
+        # count = session.query(Proxy).count()
+        result = session.execute('select count(1) from proxy')
+        count = result.fetchone()
+        return count[0]
 
     @staticmethod
     def add_one(proxy, score=INITIAL_SCORE):
@@ -38,6 +40,7 @@ class Proxy(Base):
             proxy.score = score
             session.add(proxy)
             session.commit()
+        # 主键冲突
         except IntegrityError as e:
             session.rollback()
 
