@@ -54,9 +54,9 @@ class Crawler(object, metaclass=Proxymetaclass):
         :param callback_name: 爬虫函数
         :return:
         """
-        proxies = []
+        proxies = set()
         for proxy in eval("self.{}()".format(callback_name)):
-            proxies.append(proxy)
+            proxies.add(proxy)
         return proxies
 
     def crawl_kuaidaili(self):
