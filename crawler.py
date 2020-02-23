@@ -10,7 +10,6 @@ import logging
 import requests
 from requests.exceptions import ConnectionError
 from scrapy.selector import Selector
-from models import Proxy
 
 
 class Proxymetaclass(type):
@@ -50,8 +49,8 @@ class Crawler(object, metaclass=Proxymetaclass):
         :return:
         """
         proxies = set()
-        for ip, port in eval("self.{}()".format(callback_name)):
-            proxies.add(Proxy(ip=ip, port=port))
+        for proxy in eval("self.{}()".format(callback_name)):
+            proxies.add(proxy)
         return proxies
 
     def crawl_kuaidaili(self):

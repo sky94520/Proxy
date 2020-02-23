@@ -33,8 +33,8 @@ class Getter(object):
             for callback in self.crawler.__CrawlFunc__:
                 # 爬取数据
                 proxies = self.crawler.get_proxies(callback)
-                for proxy in proxies:
-                    Proxy.add_one(proxy)
+                for ip, port in proxies:
+                    Proxy.add_one(Proxy(ip=ip, port=port))
                 new_count = Proxy.count()
                 # 未爬取到数据
                 if old_count == new_count and len(proxies) == 0:
