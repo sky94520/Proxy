@@ -157,9 +157,4 @@ class Crawler(object, metaclass=Proxymetaclass):
 
 if __name__ == '__main__':
     crawler = Crawler()
-    generator = crawler.crawl_kuaidaili()
-    for ip, port in generator:
-        print(ip, port)
-    # proxies = crawler.crawl_7yip()
-    # proxies = crawler.crawl_89ip()
-    # print(crawler.crawl_7yip())
+    print(crawler.get_proxies('crawl_7yip'))
