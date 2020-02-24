@@ -52,7 +52,7 @@ class RedisClient(object):
         if score and score > MIN_SCORE:
             ret = self.db.zincrby(REDIS_KEY, delta, proxy)
         # 减去之后再判断是否应该删除
-        if score + delta <= MIN_SCORE:
+        if score and score + delta <= MIN_SCORE:
             ret = self.db.zrem(REDIS_KEY, proxy)
         return ret
 

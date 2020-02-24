@@ -1,7 +1,7 @@
 # 按秒 测试按照一天
-TESTER_CYCLE = 50
+TESTER_CYCLE = 60
 # 每天爬取一次
-GETTER_CYCLE = 20
+GETTER_CYCLE = 60
 # 开启测试和获取函数
 TESTER_ENABLED = True
 GETTER_ENABLED = True
