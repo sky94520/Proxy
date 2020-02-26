@@ -75,8 +75,8 @@ class Crawler(object, metaclass=Proxymetaclass):
                 yield ip, port
         return self._crawl_page(func_name, url_format, callback)
 
-    def crawl_89ip(self):
-        func_name = self.crawl_89ip.__name__
+    def _crawl_89ip(self):
+        func_name = self._crawl_89ip.__name__
         url_format = 'http://www.89ip.cn/index_%d.html'
 
         def callback(selector):
